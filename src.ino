@@ -1,5 +1,4 @@
 #include <LiquidCrystal.h>
-#include "character.h"
 
 #define BUTTON 2
 
@@ -7,9 +6,20 @@
 
 LiquidCrystal lcd = LiquidCrystal(5, 6, 7, 8, 9, 10, 11);
 
+byte select[8] = {
+  0b00000,
+  0b10000,
+  0b11000,
+  0b11100,
+  0b11110,
+  0b11100,
+  0b11000,
+  0b10000
+};
 char des[17] = {};
 
 #define ALL_MENU_OPTIONS 3
+
 char menuStr[8*ALL_MENU_OPTIONS] = " photo   music   back    ";
 
 int menuOptions = 0;
@@ -50,7 +60,7 @@ void menu(int button_left_or_right/*0: left, 1: right*/) {
 }
 
 char* scroll(char* src, int len_src, int begin, int len_des=16) {
-  
+
 
   // char* des = alloca(len_des+1);
   for (int i=0; i<len_des; i++) {
@@ -74,6 +84,24 @@ void write(int n){
   } else {
     lcd.print(" ");
   }
+}
+
+// example setup and loop
+void setup() {
+  lcd.begin( 16, 2 ); // set up the LCD’s numbers of colomns and rows
+
+  lcd.createChar(SEL, select);
+  lcd.clear(); // clear LCD
+  lcd.setCursor( 0, 0 );
+
+  lcd.print(scroll(menuStr, sizeof(menuStr), 0));
+  lcd.setCursor(0,0);
+  write(SEL);
+  
+}
+void loop(){
+  menu(0);
+  delay(1000);
 }
 
 
